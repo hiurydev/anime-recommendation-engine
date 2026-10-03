@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
 import { createRequire } from 'module';
+import { Anime } from '../models/Anime.js';
+import { FeatureMeta } from '../models/FeatureMeta.js';
 
 const require = createRequire(import.meta.url);
 
@@ -12,10 +14,8 @@ router.get('/health', async (req, res) => {
   let animeCount = 0;
   let featureVersion = null;
   try {
-    animeCount = await mongoose.connection.db.collection('animes').countDocuments();
-    const activeFeatureMeta = await mongoose.connection.db
-      .collection('feature_metas')
-      .findOne({ isActive: true });
+    animeCount = await Anime.countDocuments();
+    const activeFeatureMeta = await FeatureMeta.findOne({ isActive: true });
     featureVersion = activeFeatureMeta?.version ?? null;
   } catch {
     // coleções ainda não existem antes da importação do dataset
